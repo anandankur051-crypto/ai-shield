@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shield AI — Voice Deepfake Detector</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <div class="header">
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-icon">
+          <!-- Shield / waveform icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"/>
+            <polyline points="8,12 10.5,14.5 16,9"/>
+          </svg>
+        </div>
+        <div>
+          <h1><span>SHIELD</span> AI</h1>
+          <p class="subtitle">On-device spectral analysis · no audio leaves your browser · works offline</p>
+        </div>
+      </div>
+
+      <span class="model-status">
+        <span class="dot loading" id="dot"></span>
+        <span id="modelStatus">Initialising analyser…</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Audio input ─────────────────────────────────────── -->
+  <div class="card">
+    <div class="section-label">Audio input</div>
+    <div class="btn-row">
+      <button class="primary" id="btnMic" onclick="startMic()" disabled>▶ Start mic</button>
+      <button id="btnStop" onclick="stopAll()" disabled>■ Stop</button>
+      <label class="file-label">
+        ↑ Upload audio file
+        <input type="file" id="fileInput" accept="audio/*" onchange="loadFile(this)">
+      </label>
+      <button onclick="simulateVoice(false)">Simulate real voice</button>
+      <button onclick="simulateVoice(true)">Simulate deepfake</button>
+    </div>
+    <div class="status" id="status">Initialising on-device analyser…</div>
+  </div>
+
+  <!-- ── Visualisations ──────────────────────────────────── -->
+  <div class="card">
+    <div class="section-label">Live waveform</div>
+    <canvas id="cvWave" height="64"></canvas>
+
+    <div class="section-label" style="margin-top:4px;">Mel spectrogram</div>
+    <canvas id="cvMel" height="96"></canvas>
+  </div>
+
+  <!-- ── Detection scores ────────────────────────────────── -->
+  <div class="card">
+    <div class="section-label">Detection scores</div>
+
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="score-val" id="scSpeech">—</div>
+        <div class="score-lbl">Speech</div>
+      </div>
+      <div class="score-card">
+        <div class="score-val" id="scSynth">—</div>
+        <div class="score-lbl">Synthesised</div>
+      </div>
+      <div class="score-card">
+        <div class="score-val" id="scNoise">—</div>
+        <div class="score-lbl">Noise</div>
+      </div>
+    </div>
+
+    <div class="bar-wrap">
+      <div class="bar-label">
+        <span>Real human voice</span>
+        <span id="realPct">—</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="realBar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="bar-wrap">
+      <div class="bar-label">
+        <span>AI / deepfake</span>
+        <span id="fakePct">—</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="fakeBar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:16px;">Spectral indicators</div>
+    <div id="top5"></div>
+
+    <div class="verdict waiting" id="verdict">
+      <div class="verdict-title">Waiting for audio…</div>
+      <div class="verdict-sub">Start mic or upload a file to begin analysis</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
